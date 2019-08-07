@@ -1,8 +1,19 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { withFormik, Form, Field } from 'formik';
 import * as Yup from 'yup';
+import axios from 'axios';
 
-const LoginForm = ({ errors, touched, isSubmitting }) => {
+import Users from './Users';
+
+const LoginForm = ({ status, values, errors, touched, isSubmitting }) => {
+
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    if (status) {
+      setUsers(users => [...users, status])
+    }
+  }, [status]);
 
   return (
     <div className="loginForm">
@@ -27,6 +38,7 @@ const LoginForm = ({ errors, touched, isSubmitting }) => {
           <button disabled={isSubmitting}>Submit</button>
         </div>
       </Form>
+      <Users users={users} />
     </div>
   )
 }
@@ -53,12 +65,28 @@ const FormikLoginForm = withFormik({
       .min(8, "Password must be 8 charaters or longer")
       .required("Please include your password"),
     tos: Yup.boolean()
-      .default(false, "Please review our Terms of Service and check the box to indicate that you have.")
       .required("Please review our Terms of Service and check the box to indicate that you have.")
+      .default(false, "Please review our Terms of Service and check the box to indicate that you have.")
   }),
 
-  handleSubmit(values) {
-    console.log(values);
+
+  handleSubmit(values, { setStatus, resetForm, setErrors, setSubmitting }) {
+    if (values === "b@b.b") {
+      setErrors({ email: "That email is already taken, probably by you." });
+    } else {
+      axios
+        .post('https://reqres.in/api/users', values)
+        .then(res => {
+          resetForm();
+          setStatus(res.data);
+          console.log(res.data);
+          setSubmitting(false);
+        })
+        .catch(err => {
+          console.log(err);
+          setSubmitting(false);
+        })
+    }
   }
 
 })(LoginForm);
