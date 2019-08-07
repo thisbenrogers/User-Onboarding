@@ -57,7 +57,7 @@ const FormikLoginForm = withFormik({
   validationSchema: Yup.object().shape({
     name: Yup.string()
       .trim("looks like there's a whitespace before or after your name.")
-      .required("Please type in your name here."),
+      .required("Please include your name"),
     email: Yup.string()
       .email("Email not valid")
       .required("Please include an email address"),
@@ -71,7 +71,7 @@ const FormikLoginForm = withFormik({
 
 
   handleSubmit(values, { setStatus, resetForm, setErrors, setSubmitting }) {
-    if (values === "b@b.b") {
+    if (values.email === "waffle@syrup.com") {
       setErrors({ email: "That email is already taken, probably by you." });
     } else {
       axios
