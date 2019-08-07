@@ -2,7 +2,7 @@ import React from 'react';
 import { withFormik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 
-const LoginForm = (errors, touched) => {
+const LoginForm = ({ errors, touched, isSubmitting }) => {
 
   return (
     <div className="loginForm">
@@ -24,7 +24,7 @@ const LoginForm = (errors, touched) => {
           Acknowledge our <a href="https://en.wikipedia.org/wiki/Terms_of_service">terms of service</a>
         </label>
         <div>
-          <button>Submit</button>
+          <button disabled={isSubmitting}>Submit</button>
         </div>
       </Form>
     </div>
@@ -47,7 +47,7 @@ const FormikLoginForm = withFormik({
       .trim("looks like there's a whitespace before or after your name.")
       .required("Please type in your name here."),
     email: Yup.string()
-      .email("Must be a valid email format (username@mail.com)")
+      .email("Email not valid")
       .required("Please include an email address"),
     password: Yup.string()
       .min(8, "Password must be 8 charaters or longer")
